@@ -13,10 +13,15 @@ Discourse.filters.push(:ratings)
 Discourse.anonymous_filters.push(:ratings)
 
 after_initialize do
-  if scope.is_staff?
   Category.register_custom_field_type('rating_enabled', :boolean)
   Topic.register_custom_field_type('rating_count', :integer)
 
+  if SiteSetting.rating_enabled?
+      is_staff = topic_list.current_user && topic_list.current_user.staff?
+      allowed_access = SiteSetting.assigns_public || is_staff
+
+  if allowed_access && topics.length > 0
+  
   module ::DiscourseRatings
     class Engine < ::Rails::Engine
       engine_name "discourse_ratings"
@@ -195,5 +200,7 @@ after_initialize do
       end
     end
   end
+end
+end
 end
 end
