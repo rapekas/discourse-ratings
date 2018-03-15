@@ -182,8 +182,6 @@ after_initialize do
       object.rating_enabled?
     end
   end
-  
-  enabled_site_setting :rating_enabled
 
   add_to_serializer(:current_user, :can_see_rating?) do
     return true if scope.is_staff?
