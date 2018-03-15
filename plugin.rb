@@ -16,7 +16,6 @@ after_initialize do
   Category.register_custom_field_type('rating_enabled', :boolean)
   Topic.register_custom_field_type('rating_count', :integer)
 
-  if SiteSetting.rating_enabled?
       is_staff = topic_list.current_user && topic_list.current_user.staff?
       allowed_access = SiteSetting.assigns_public || is_staff
 
@@ -200,6 +199,5 @@ after_initialize do
       end
     end
   end
-end
 end
 end
