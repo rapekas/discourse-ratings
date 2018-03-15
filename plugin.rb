@@ -13,6 +13,7 @@ Discourse.filters.push(:ratings)
 Discourse.anonymous_filters.push(:ratings)
 
 after_initialize do
+  if scope.is_staff?
   Category.register_custom_field_type('rating_enabled', :boolean)
   Topic.register_custom_field_type('rating_count', :integer)
 
@@ -183,12 +184,7 @@ after_initialize do
     end
   end
 
-  add_to_serializer(:current_user, :can_rate?) { object.custom_fields["rating_enabled"] } do
-    return true if scope.is_staff?
-    group = Group.find_by("lower(name) = ?", SiteSetting.rating_allowed_group.downcase)
-    return true if group && GroupUser.where(user_id: scope.user.id, group_id: group.id).exists?
-  end
-  
+  add_to_serializer(:basic_category, :rating_enabled) { object.custom_fields["rating_enabled"] }
   add_to_serializer(:post, :rating) { post_custom_fields["rating"] }
 
   require_dependency 'topic_query'
@@ -199,4 +195,5 @@ after_initialize do
       end
     end
   end
+end
 end
