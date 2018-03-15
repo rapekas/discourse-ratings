@@ -21,3 +21,7 @@ plugins:
   rating_topic_list_average_enabled:
     client: true
     default: true
+  rating_allowed_group:
+    client: true
+    default: "trust_level_4"
+    
