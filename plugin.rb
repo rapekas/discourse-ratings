@@ -185,7 +185,7 @@ after_initialize do
   
   enabled_site_setting :rating_enabled
 
-  add_to_serializer(:current_user, :can_see_rating?) { object.custom_fields["rating_enabled"] } do
+  add_to_serializer(:current_user, :can_see_rating?) do
     return true if scope.is_staff?
     group = Group.find_by("lower(name) = ?", SiteSetting.rating_allowed_group.downcase)
     return true if group && GroupUser.where(user_id: scope.user.id, group_id: group.id).exists?
