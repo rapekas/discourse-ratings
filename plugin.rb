@@ -183,7 +183,11 @@ after_initialize do
     end
   end
 
-  add_to_serializer(:basic_category, :rating_enabled) { object.custom_fields["rating_enabled"] }
+  add_to_serializer(:basic_category, :rating_enabled, :current_user, :can_see_ratings?) { object.custom_fields["rating_enabled"] } do
+    return true if scope.is_staff?
+    group = Group.find_by("lower(name) = ?", SiteSetting.ratings_allowed_group.downcase)
+    return true if group && GroupUser.where(user_id: scope.user.id, group_id: group.id).exists?
+  end
   add_to_serializer(:post, :rating) { post_custom_fields["rating"] }
 
   require_dependency 'topic_query'
